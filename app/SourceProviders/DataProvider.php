@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\SourceProviders;
 
+use App\Exceptions\PageParserException;
+use App\Exceptions\PageParserFactoryException;
 use App\SourceProviders\Interfaces\DataProviderInterface;
 use App\SourceProviders\Interfaces\WebSourceProviderInterface;
 use App\Sources\Interfaces\MainPageParserInterface;
 use App\Sources\Interfaces\PageParserFactoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class DataProvider implements DataProviderInterface
 {
@@ -61,8 +64,13 @@ class DataProvider implements DataProviderInterface
         $responses = $this->webSourceProvider->getResponsesByUrlList($urls);
 
         foreach ($responses as $url => $response) {
-            $parser = $this->pageParserFactory->getParserByUrl($url);
-            $news[] = $parser->parseNewsData($response, $url);
+            try {
+                $parser = $this->pageParserFactory->getParserByUrl($url);
+                $news[] = $parser->parseNewsData($response, $url);
+            } catch (PageParserFactoryException|PageParserException $e) {
+                Log::info($e->getMessage());
+                continue;
+            }
         }
 
         return $news;

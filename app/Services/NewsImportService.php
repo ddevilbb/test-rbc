@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exceptions\NewImportServiceException;
+use App\Exceptions\ValidationException;
 use App\Helpers\NewsDataHelper;
 use App\Repositories\Interfaces\NewsRepositoryInterface;
 use App\SourceProviders\Interfaces\DataProviderInterface;
@@ -70,7 +71,7 @@ class NewsImportService implements NewsImportServiceInterface
             $hashList[NewsDataHelper::generateHashByUrl($url)] = $url;
         }
 
-        $newsList = $this->newsRepository->findAllByHashList($hashList);
+        $newsList = $this->newsRepository->findAllByHashList(array_keys($hashList));
         foreach ($newsList->all() as $news) {
             unset($hashList[$news->hash]);
         }
@@ -88,7 +89,12 @@ class NewsImportService implements NewsImportServiceInterface
         }
 
         foreach ($newsList as $newsItem) {
-            $this->newsRepository->store($newsItem);
+            try {
+                $this->newsRepository->store($newsItem);
+            } catch (ValidationException $e) {
+                Log::error($e->getMessage());
+                continue;
+            }
         }
     }
 }
