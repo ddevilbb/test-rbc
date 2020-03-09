@@ -51,10 +51,10 @@ class NewsImportService implements NewsImportServiceInterface
             $this->removeExistsUrls($urls);
             $newsList = $this->dataProvider->getNewsData($urls);
             $this->storeNewsList($newsList);
-            Log::info(sprintf('Finish import news! Added news count: %d', count($newsList)));
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
+        Log::info(sprintf('Finish import news! Added news count: %d', count($newsList)));
     }
 
     /**
