@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->exec('import:news')->everyTenMinutes();
+        $schedule->exec('php artisan import:news')->everyFiveMinutes();
     }
 
     /**

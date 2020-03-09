@@ -8,6 +8,7 @@ folders:
 sites:
     - map: homestead.test
       to: /home/vagrant/code/public
+      schedule: true
 databases:
     - test_rbc
 features:
