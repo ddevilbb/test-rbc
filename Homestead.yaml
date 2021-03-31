@@ -10,7 +10,7 @@ sites:
       to: /home/vagrant/code/public
       schedule: true
 databases:
-    - test_rbc
+    - homestead
 features:
     - mariadb: true
     - ohmyzsh: false
